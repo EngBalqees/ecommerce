@@ -1,6 +1,7 @@
 import mongoose, { Types, model, Schema } from "mongoose";
-import UserModel from "./user.model";
-import { ref } from "joi";
+import UserModel from "./user.model.js";
+
+
 
 
 const CategorySchema = new Schema({

@@ -1,8 +1,9 @@
-import CategoryModel from "../../../DB/model/category.model";
-
+import CategoryModel from "../../../DB/model/category.model.js";
+import fileUpload from "../../utils/multer.js";
 export const addCategory = async(req,res)=>{
     try{
-        const {name,image,status} = req.body;
+        const {name,status} = req.body;
+        const image = req.file ? req.file.filename : null;
         const category = new CategoryModel({name,image,status});
         await category.save();
 
