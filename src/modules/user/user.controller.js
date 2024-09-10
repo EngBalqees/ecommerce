@@ -3,6 +3,7 @@ import UserModel from '../../../DB/model/user.model.js';
 import jwt from 'jsonwebtoken';
 import { LoginSchema, RegisterSchema } from "./user.validation.js";
 import fileUpload from '../../utils/multer.js';
+import cloudinary from '../../utils/cloudinary.js';
 
 export const Register = async (req,res)=>{
     try{
@@ -34,3 +35,9 @@ export const Login = async(req,res)=>{
     const token = await jwt.sign({id:user._id},process.env.LOGINSIGNTURE);
     return res.status(200).json({message:"success",token});
 } 
+
+export const uploadImage = async(req,res)=>{
+    const {secure_url} = await cloudinary.uploader.upload(req.file.path);
+    const user = await UserModel.findByIdAndUpdate(req.id,{image:secure_url});
+    return res.status(200).json({message:"success"});
+}
