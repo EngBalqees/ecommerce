@@ -4,11 +4,6 @@ import fileUpload from "../../utils/multer.js";
 import cloudinary from "../../utils/cloudinary.js";
 export const addCategory = async(req,res)=>{
     try{
-        const userId= req.id;
-        const user = UserModel.findById(userId);
-        if(!user){
-            
-        }
         const {name,status} = req.body;
         const {secure_url} = await cloudinary.uploader.upload(req.file.path);
         const category = new CategoryModel({name,image:secure_url,status});
