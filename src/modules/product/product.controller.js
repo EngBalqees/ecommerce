@@ -30,8 +30,8 @@ export const getProducts = async(req,res)=>{
 //update product
 export const updateProduct = async(req,res) =>{
     const {id} = req.params;
-    const {image} =req.body;
-    const product = await productModel.updateOne({_id:id},{image:image});
+    const {price,description} =req.body;
+    const product = await productModel.updateOne({_id:id},{price,description});
     
     if (!product.modifiedCount > 0){
         return res.status(400).json({message : "can't update poduct image"});
