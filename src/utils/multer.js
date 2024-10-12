@@ -1,12 +1,14 @@
 import multer from 'multer';
 import { nanoid } from 'nanoid';
 
-function fileUpload(){
+function upload(){
  const storage = multer.diskStorage({
     destination:(req,res,cb)=>{
+        console.log('Setting destination'); // Debugging
         cb(null,'uploads/');
     },
     filename:(req,file,cb)=>{
+        console.log('Setting filename'); // Debugging
         const uniqueSuffix = nanoid()+Date.now();
         cb(null,uniqueSuffix + "_" +file.originalname)
     }
@@ -14,4 +16,4 @@ function fileUpload(){
  const upload = multer({storage});
  return upload;
 }
-export default fileUpload
+export default upload;

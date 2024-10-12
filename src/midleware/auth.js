@@ -1,4 +1,4 @@
-import UserModel from "../../DB/model/user.model";
+import UserModel from "../../DB/model/user.model.js";
 export const auth = (accessRole = []) => {
     return async (req, res, next) => {
         try {

@@ -1,6 +1,7 @@
-import Cart from "../../../DB/model/cart.model";
-import productModel from "../../../DB/model/product.model";
-import UserModel from "../../../DB/model/user.model";
+import Cart from "../../../DB/model/cart.model.js";
+import productModel from "../../../DB/model/product.model.js";
+import UserModel from "../../../DB/model/user.model.js";
+
 async function calculateprice(cart) {
     let totalPrice = 0;
     for (const item of cart.products) {
