@@ -28,7 +28,7 @@ const OrderSchema = new Schema({
     },
     orderStatus: {
         type: String,
-        enum: ['pending', 'shipped', 'delivered', 'cancelled'],
+        enum: ['pending', 'cancelled', 'confirmed', 'onway','delivered'],
         default: 'pending'
     },
     shippingAddress: {
@@ -37,7 +37,20 @@ const OrderSchema = new Schema({
     },
     paymentMethod: {
         type: String,
+        enum: ['cash','card'],
+        default: 'cash',
         required: true
+    },
+    notes:{
+        type:String,
+    },
+    rejectionReason:{
+        type: String,
+    },
+    updatedBy:{
+        type: Types.ObjectId,
+        ref:'User',
+        required: true,
     }
 }, { timestamps: true});
 

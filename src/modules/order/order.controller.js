@@ -1,7 +1,7 @@
 import order from "../../../DB/model/order.model.js";
 import Cart from "../../../DB/model/cart.model.js";
 import productModel from "../../../DB/model/product.model.js";
-
+import coupon from "../../../DB/model/coupon.model.js";
 //create order
 export const createOrder = async (req, res) => {
     const { items, shippingAddress, paymentMethod } = req.body;
@@ -9,7 +9,16 @@ export const createOrder = async (req, res) => {
         // Validate cart and user
         const cart = await Cart.findOne({ user: req.user.id }).populate('items.product');
         if (!cart) return res.status(404).json({ message: 'Cart not found' });
-
+        if (req.body.couponId){
+            const coupon = await coupon.findById(req.body.couponId);
+            if(!coupon) return res.status(400).json({message: 'coupon not found'});
+        }
+        if(coupon.expireDate < new Date()){
+            return res.status(400).json({message: 'coupon expired'});
+        }
+        if(coupon.usedBy.includes(req.user._id)){
+            return res.status(409).json({message:"coupon already uesd"});
+        }
         // Check if the user is passing items manually instead of cart (if required)
         const orderItems = items || cart.items;
         let totalAmount = 0;
@@ -21,12 +30,32 @@ export const createOrder = async (req, res) => {
 
             totalAmount += product.price * item.quantity;
         }
+        if (coupon){
+            if(totalAmount < coupon.minimumOrderValue){
+                return res.status(400).json({ message: `Minimum order value for this coupon is ${coupon.minimumOrderValue}` });
+            }
+        }
+        if(coupon.discountType === 'percent'){
+            discountAmount = (totalAmount * coupon.discountValue) / 100;
+        } else if (coupon.discountType === 'fixed') {
+            discountAmount = coupon.discountValue;
+        }
+           // Ensure the discount doesn't exceed the total amount
+           discountAmount = Math.min(discountAmount, totalAmount);
+           totalAmount -= discountAmount;
+
+           // Mark the coupon as used by this user
+           coupon.usedBy = coupon.usedBy ? [...coupon.usedBy, req.user._id] : [req.user._id];
+           await coupon.save();
+       
 
         // Create a new order
         const order = new order({
             user: req.user.id,
             items: orderItems,
             totalAmount,
+            discountAmount,  // Save the discount amount
+            coupon: coupon ? coupon._id : null,  // Save the applied coupon
             shippingAddress,
             paymentMethod
         });

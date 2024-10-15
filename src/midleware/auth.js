@@ -84,7 +84,7 @@ export const resetPassword = async (req,res) =>{
     try{
         const decoded = jwt.verify(token,process.env.BEARERTOKEN);
         const user = await UserModel.findById(decoded.id);
-        if(!user){
+        if(!user){ 
             return res.status(404).json({message :"invalid token"});
         }
         user.password = newPassword;

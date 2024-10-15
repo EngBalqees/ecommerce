@@ -5,6 +5,7 @@ import cart from "../src/modules/cart/cart.router.js";
 import category from "../src/modules/category/category.router.js";
 import subcategory from "../src/modules/subcategory/subcategory.router.js";
 import order from "../src/modules/order/order.router.js";
+import coupon from "../src/modules/coupon/coupon.router.js";
 export const initApp = (app, express) => {
     connection();
     app.use(express.json());
@@ -14,6 +15,7 @@ export const initApp = (app, express) => {
     app.use('/product',product);
     app.use('/cart',cart);
     app.use('/order',order);
+    app.use('/coupon',coupon);
     app.use('*',(req,res)=>{
        return res.status(404).json({message:"page not found"});
     });
