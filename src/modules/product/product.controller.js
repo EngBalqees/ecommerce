@@ -1,5 +1,6 @@
+import { match } from "assert";
 import productModel from "../../../DB/model/product.model.js";
-
+import { pagination } from "../../utils/pagination.js";
 
 //add product
 export const addProduct = async (req, res) => {
@@ -28,7 +29,35 @@ export const getProduct = async (req, res) => {
 
 //get all products
 export const getProducts = async (req, res) => {
-    const products = await productModel.findAll();
+    const {skip,limit} = pagination(req.query.page,req.query.limit);
+    let queryObj = {...req.query};
+    const execQuery = ['page','limit'];
+    execQuery.map((ele) =>{
+        delete queryObj[ele];
+    });
+    queryObj = JSON.stringify(queryObj);
+    queryObj = queryObj.replace(/gt||gte|lt|lte|in|nin|eq/g,match => `$${match}`);
+    queryObj = JSON.parse(queryObj);
+
+
+    const mongoseQuery = productModel.find(queryObj).skip(skip).limit(limit);
+    /*populate({
+        path: 'reviews',
+        populate:{
+            path: 'userId',
+            select: 'user-_id',
+        },
+    }).select('name')*/
+    if(req.query.search){
+        mongoseQuery.find({
+            $or :[
+                {name : {$regex : req.query.search}},
+                {description : {$regex: req.query.search}}
+            ]
+        });
+    }
+    const count = await productModel.estimatedDocumentCount();
+    const products = await mongoseQuery.sort(req.query.sort);
     return res.status(200).json({ message: "success", products });
 }
 

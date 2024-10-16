@@ -9,14 +9,17 @@ import coupon from "../src/modules/coupon/coupon.router.js";
 export const initApp = (app, express) => {
     connection();
     app.use(express.json());
-    app.use('/user',user);
-    app.use('/category',category);
-    app.use('/subcategory',subcategory);
-    app.use('/product',product);
-    app.use('/cart',cart);
-    app.use('/order',order);
-    app.use('/coupon',coupon);
-    app.use('*',(req,res)=>{
-       return res.status(404).json({message:"page not found"});
+    app.use('/user', user);
+    app.use('/category', category);
+    app.use('/subcategory', subcategory);
+    app.use('/product', product);
+    app.use('/cart', cart);
+    app.use('/order', order);
+    app.use('/coupon', coupon);
+    app.use('*', (req, res) => {
+        return res.status(404).json({ message: "page not found" });
+    });
+    app.use((err, req, res, next) => {
+        res.json({ message: err.message });
     });
 }
