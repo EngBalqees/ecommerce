@@ -1,6 +1,6 @@
 
 import mongoose, {Schema,model,Types} from "mongoose";
-import { type } from "os";
+
 
 const UserSchema = new Schema({
     userName:{
@@ -10,6 +10,10 @@ const UserSchema = new Schema({
      email:{
         type: String,
         required:true,
+     },
+     isDeleted:{
+      type: Boolean,
+      default: false,
      },
      password:{
         type: String,
