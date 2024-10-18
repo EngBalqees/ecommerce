@@ -50,3 +50,12 @@ export const uploadImage = async (req, res) => {
     const user = await UserModel.findByIdAndUpdate(req.id, { image: secure_url });
     return res.status(200).json({ message: "success" });
 }
+export const addUserExcel = async(req,res) =>{
+    const workbook = xlsx.readFile(req.file.path);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const users = xlsx.utils.sheet_to_json(worksheet);
+
+    await UserModel.insertMany(users);
+
+    return res.status(200).json({message: "success"});
+}

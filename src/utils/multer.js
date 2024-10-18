@@ -1,7 +1,12 @@
 import multer from 'multer';
 import { nanoid } from 'nanoid';
 
-function upload(){
+export const fileType ={
+    image: ['image/png','image/jpeg','image/webp'],
+    pdf :['application/pdf'],
+    excel : ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+}
+function upload(customTypes = []){
  const storage = multer.diskStorage({
     destination:(req,res,cb)=>{
         console.log('Setting destination'); // Debugging
