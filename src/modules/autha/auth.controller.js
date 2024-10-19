@@ -1,4 +1,4 @@
-import UserModel from "../../DB/model/user.model.js";
+import UserModel from "../../../DB/model/user.model.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import upload from '../../utils/multer.js';
 import { LoginSchema, RegisterSchema } from "../autha/user.validation.js";
