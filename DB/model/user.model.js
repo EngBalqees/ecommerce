@@ -3,7 +3,7 @@ import mongoose, {Schema,model,Types} from "mongoose";
 
 
 const UserSchema = new Schema({
-    userName:{
+    UserName:{
         type: String,
         required:true,
      },
@@ -27,7 +27,7 @@ const UserSchema = new Schema({
         type:Number,
         required: true,
      },
-     addres:{
+     address:{
         type:Number,
         required: true,
      },
