@@ -7,6 +7,7 @@ import subcategory from "../src/modules/subcategory/subcategory.router.js";
 import order from "../src/modules/order/order.router.js";
 import coupon from "../src/modules/coupon/coupon.router.js";
 import auth from "../src/modules/autha/auth.router.js";
+import review from "../src/modules/reviews/review.router.js";
 export const initApp = (app, express) => {
     connection();
     app.use(express.json());
@@ -18,6 +19,7 @@ export const initApp = (app, express) => {
     app.use('/cart', cart);
     app.use('/order', order);
     app.use('/coupon', coupon);
+    app.use('/review',review);
 
     app.use('*', (req, res) => {
         return res.status(404).json({ message: "page not found" });

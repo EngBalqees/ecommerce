@@ -29,7 +29,7 @@ export const getProduct = async (req, res) => {
 
 //get all products
 export const getProducts = async (req, res) => {
-    const {skip,limit} = pagination(req.query.page,req.query.limit);
+   const {skip,limit} = pagination(req.query.page,req.query.limit);
     let queryObj = {...req.query};
     const execQuery = ['page','limit'];
     execQuery.map((ele) =>{
@@ -58,6 +58,7 @@ export const getProducts = async (req, res) => {
     }
     const count = await productModel.estimatedDocumentCount();
     const products = await mongoseQuery.sort(req.query.sort);
+ 
     return res.status(200).json({ message: "success", products });
 }
 

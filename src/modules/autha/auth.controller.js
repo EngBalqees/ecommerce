@@ -1,5 +1,5 @@
 import UserModel from "../../../DB/model/user.model.js";
-import { sendEmail } from "../utils/sendEmail.js";
+import { sendEmail } from "../../utils/sendEmail.js";
 import upload from '../../utils/multer.js';
 import { LoginSchema, RegisterSchema } from "../autha/user.validation.js";
 import bcrypt from 'bcryptjs';
@@ -8,10 +8,10 @@ export const Register = async (req, res) => {
     try {
         console.log(req.body);
         const { UserName, email, password, phone, address, gender, status, role } = req.body;
-        const {error,value} = await RegisterSchema.body.validate(req.body, { abortEarly: false});
+        /*const {error,value} = await RegisterSchema.body.validate(req.body, { abortEarly: false});
         if(error){
             return res.status(400).json({message:"validation failes",details: error.details});
-        }
+        }*/
         const checkuser = await UserModel.findOne({ email });
         if (checkuser) {
             return res.status(409).json({ message: "email exist" });
@@ -19,7 +19,7 @@ export const Register = async (req, res) => {
      
         const { secure_url } = await cloudinary.uploader.upload(req.file.path);
         const passwordhashed = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
-       const newUser = await UserModel.create({ UserName, email, password: passwordhashed, image: secure_url, phone, address, gender, status, role });
+       const newUser = await UserModel.create({ UserName, email, password: passwordhashed,image: secure_url, phone, address, gender, status, role });
         const html = `
          <div>
          <p>Dear: ${UserName}</p>
