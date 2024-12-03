@@ -8,6 +8,6 @@ const router = Router();
 
 router.get('/getUsers',asyncHandler(userController.getUsers));
 router.get('/getUserProfile',asyncHandler(userController.getUserProfile));
-router.post('/uploadExcel',upload(fileType.excel).single('excel') ,asyncHandler(userController.addUserExcel));
-router.post('/uploadImage',upload(fileType.image).single('image'),asyncHandler(userController.uploadImage));
+router.post('/uploadExcel', upload.single('excel'),asyncHandler(userController.addUserExcel));
+router.post('/uploadImage' ,upload.single('img'),asyncHandler(userController.uploadImage));
 export default router;

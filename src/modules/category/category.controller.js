@@ -1,67 +1,49 @@
-import CategoryModel from "../../../DB/model/category.model.js";
-import UserModel from "../../../DB/model/user.model.js";
-import fileUpload from "../../utils/multer.js";
-import cloudinary from "../../utils/cloudinary.js";
-export const addCategory = async(req,res)=>{
-    try{
-        const {name,status} = req.body;
-        const {secure_url} = await cloudinary.uploader.upload(req.file.path);
-        const category = new CategoryModel({name,image:secure_url,status});
-        await category.save();
+import upload from "../../utils/multer.js"; // Make sure multer has proper config
+import { createCategorySchema, updateCategorySchema } from "./category.validation.js"; // Import schemas
+import validation from "../../midleware/validation.js"; // Validation middleware
+import { asyncHandler } from "../../utils/asyncHandler.js"; // Async error handler
+import { auth } from "../../midleware/auth.js"; // Authentication middleware
+import * as CategoryController from "./category.controller.js";
+import { Router } from "express";
+const router = Router();
 
-        return res.status(200).json({message:"success",category});
-    }catch(error){
-      return res.status(500).json({message:"catch error",error});
-    }
-}
-//get category
-export const getCategory = async(req,res)=>{
-    const {id} = req.params;
-    const category = await CategoryModel.findById({_id:id});
-    return res.status(200).json({message:"success",category});
-}
+// Define the route
+router.post(
+    '/addCategory',
+    auth(['Admin']), // Admin-only authentication
+    upload.single('img'), // Specify the field name for image upload in your form
+    validation(createCategorySchema), // Apply the validation middleware
+    asyncHandler(CategoryController.addCategory) // Async handler for error management
+  );
+  
 
-//get all categories
-export const getCategories = async(req,res)=>{
-    const categories = await CategoryModel.findAll({
-        attributes: ['name','image','status']
-    });
-    return res.status(200).json({message:"success",categories});
-}
+// Get Category by ID
+router.get(
+    "/getCategory/:id",
+    auth(["Admin", "User"]),
+    asyncHandler(CategoryController.getCategory)
+);
 
-//update category
-export const updateCategory = async(req,res) =>{
-    const {id} = req.params;
-    const {image} =req.body;
-    const category = await CategoryModel.updateOne({_id:id},{image:image});
-    
-    if (!category.modifiedCount > 0){
-        return res.status(400).json({message : "can't update category image"});
-    }
-    return res.status(200).json({mesage:"success",category});
+// Get all Categories
+router.get(
+    "/getCategories",
+    auth(["Admin", "User"]),
+    asyncHandler(CategoryController.getCategories)
+);
 
-}
+// Delete Category
+router.delete(
+    "/deleteCategory/:id",
+    auth(["Admin"]),
+    asyncHandler(CategoryController.deleteCategory)
+);
 
-//delete category
-export const deleteCategory = async(req,res)=>{
-    const {id} = req.params;
-    const category = await CategoryModel.findById(id);
-        if (!category) {
-            return res.status(404).json({ error: 'Subcategory not found' });
-        }
+// Update Category
+router.put(
+    "/updateCategory/:id",
+    auth(["Admin"]),
+    validation(updateCategorySchema), // Apply validation to update
+    asyncHandler(CategoryController.updateCategory)
+);
 
-        // Extract the public ID from the image URL
-        const imageUrl = category.image;
-        const publicId = imageUrl.split('/').pop().split('.')[0]; // Extract the public ID from URL
-        
-        // Delete the image from Cloudinary
-        await cloudinary.uploader.destroy(publicId, (error, result) => {
-            if (error) {
-                return res.status(500).json({ error: 'Failed to delete image from Cloudinary' });
-            }
-            console.log('Cloudinary delete result:', result);
-        });
-
-    category = await CategoryModel.deleteOne({_id:id});
-    return res.status(200).json({message:"success",category});
-}
+export default router;

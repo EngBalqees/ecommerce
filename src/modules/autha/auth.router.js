@@ -4,10 +4,22 @@ import validation from "../../midleware/validation.js";
 import {asyncHandler} from "../../utils/asyncHandler.js";
 import { LoginSchema, RegisterSchema } from "./user.validation.js";
 const router = Router();
-router.post('/Register',validation(RegisterSchema),asyncHandler(authController.Register));
-router.post('/login',validation(LoginSchema),asyncHandler(authController.Login));
-router.patch('/foregetPassword',authController.forgetPassword);
-router.patch('/resetPassword',authController.resetPassword);
-router.patch('/sendConfirmEmail',authController.sendConfirmEmail);
-router.patch('/confirmEmail',authController.confirmEmail);
+// Register user
+router.post('/register', validation(RegisterSchema), asyncHandler(authController.Register));
+
+// Login user
+router.post('/login', validation(LoginSchema), asyncHandler(authController.Login));
+
+// Forget password (send reset email)
+router.post('/forgetPassword', asyncHandler(authController.forgetPassword));
+
+// Reset password
+router.post('/resetPassword', asyncHandler(authController.resetPassword));
+
+// Send confirmation email
+router.post('/sendConfirmEmail', asyncHandler(authController.sendConfirmEmail));
+
+// Confirm email
+router.get('/confirmEmail/:token', asyncHandler(authController.confirmEmail));
+
 export default router;

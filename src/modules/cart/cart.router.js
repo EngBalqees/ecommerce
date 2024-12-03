@@ -1,12 +1,11 @@
 import * as cartController from '../cart/cart.controller.js';
 import { Router } from "express";
 const router = Router();
-router.post('/createcart',cartController.createCart);
-router.post('/addproduct/:id',cartController.addtoCart);
-router.get('/getcart/:id',cartController.getCart);
-router.delete('/removeitem/:id',cartController.removeItem);
-router.delete('/clearcart/:id',cartController.clearCart);
-router.patch('/increaseQuantity/:id',cartController.increareQTY);
-router.patch('/decreaseQuantity/:id',cartController.decreaseQTY);
-
+router.post('/create-cart', cartController.createCart);
+router.post('/add-product/:id', cartController.addToCart);
+router.get('/get-cart/:userId', cartController.getCart);
+router.delete('/remove-item/:id', cartController.removeItem);
+router.delete('/clear-cart/:id', cartController.clearCart);
+router.patch('/increase-quantity/:id', cartController.increaseQTY);
+router.patch('/decrease-quantity/:id', cartController.decreaseQTY);
 export default router;

@@ -1,35 +1,32 @@
-import mongoose, { Types, model, Schema } from "mongoose";
-import productModel from "./product.model.js";
-import UserModel from "./user.model.js";
-const reviewsSchema = new Schema({
+import mongoose from 'mongoose';
+
+const reviewSchema = new mongoose.Schema({
     productId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: productModel,
-        required: true
+        ref: 'Product', // Assuming you have a Product model
+        required: true,
     },
-   UserName: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: UserModel,
-        required: true
+    UserName: {
+        type: String,
+        required: true,
     },
-    reviewText :{
-        type : String,
-        required : true
+    reviewText: {
+        type: String,
+        required: true,
+        maxlength: 1000, // Optionally, set a max length for review text
     },
-    rating:{
-        type : Number,
-        required : true
+    rating: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 5, // Rating should be between 1 and 5
     },
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: UserModel,
-        required: true
+    createdAt: {
+        type: Date,
+        default: Date.now,
     },
-    updatedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: UserModel,
-    },
-
 });
-const reviewModel = model( "review",reviewsSchema);
+
+const reviewModel = mongoose.model('Review', reviewSchema);
+
 export default reviewModel;
